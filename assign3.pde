@@ -21,7 +21,7 @@ boolean leftPressed = false;
 boolean rightPressed = false;
 boolean hogIdle=false;
 // For debug function; DO NOT edit or remove this!
-int playerHealth = 0;
+int playerHealth =2;
 float cameraOffsetY = 0;
 boolean debugMode = false;
 
@@ -51,7 +51,6 @@ void setup() {
   groundhogX1=320;
   groundhogY1=80;
   if(hogIdle){
-    image(groundhogIdle,groundhogX1,groundhogY1);
   }
 }
 
@@ -98,14 +97,6 @@ void draw() {
 		fill(124, 204, 25);
 		noStroke();
 		rect(0, 160 - GRASS_HEIGHT, width, GRASS_HEIGHT);
-
-    //heart
-    for(int l=0;l<5;l++){
-      lifeX=10+(l*70);
-      lifeY=10;
-      image(life,lifeX,lifeY);
-    }
-
 		// Soil - REPLACE THIS PART WITH YOUR LOOP CODE!
 		for(int i=0;i<width;i++){
       for(int j=0;j<4;j++){
@@ -288,12 +279,11 @@ void draw() {
       hogIdle=true;
     }
   }
-
-
-		// Player
-
-		// Health UI
-
+    // Player heart
+    for(int l=10;l<10+70*playerHealth;l+=70){
+       lifeY=10;
+      image(life,l,lifeY);
+    }
 		break;
 
 		case GAME_OVER: // Gameover Screen
