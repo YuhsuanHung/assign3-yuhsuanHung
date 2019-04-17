@@ -20,6 +20,7 @@ boolean downPressed = false;
 boolean leftPressed = false;
 boolean rightPressed = false;
 boolean hogIdle=false;
+int k=0;
 // For debug function; DO NOT edit or remove this!
 int playerHealth =2;
 float cameraOffsetY = 0;
@@ -51,6 +52,7 @@ void setup() {
   groundhogX1=320;
   groundhogY1=80;
   if(hogIdle){
+  image(groundhogIdle,groundhogX1,groundhogY1);
   }
 }
 
@@ -93,6 +95,9 @@ void draw() {
 	    strokeWeight(5);
 	    fill(253,184,19);
 	    ellipse(590,50,120,120);
+
+pushMatrix();
+translate(0,k);
     // Grass
 		fill(124, 204, 25);
 		noStroke();
@@ -236,6 +241,7 @@ void draw() {
    image(stone2,stone2X,stone6Y);
    stone6Y-=80;
    }
+popMatrix();
 //groundhog
     if(groundhogX1==320&&groundhogY1==80){
     image(groundhogIdle,groundhogX1,groundhogY1);
@@ -243,7 +249,7 @@ void draw() {
     if(hogIdle){
     image(groundhogIdle,groundhogX1,groundhogY1);
     }
-    if (downPressed) {
+    if(downPressed) {
     hogIdle=false;
     image(groundhogDown,groundhogX1,groundhogY1);
     groundhogY1 += speed;
@@ -251,9 +257,9 @@ void draw() {
     rightPressed=false;
     if(groundhogY1>2000)groundhogY1=2000;
     if(groundhogY1%80==0){//160,240,320,400stop
-      downPressed=false;
+    downPressed=false;
       hogIdle=true;
-    }
+     }
   }
     if (leftPressed) {
     hogIdle=false;
@@ -279,12 +285,17 @@ void draw() {
       hogIdle=true;
     }
   }
-    // Player heart
+    //heart
     for(int l=10;l<10+70*playerHealth;l+=70){
        lifeY=10;
       image(life,l,lifeY);
     }
-		break;
+// Player
+if(downPressed){ 
+ translate(0,k);
+ k-=speed;
+}
+    break;
 
 		case GAME_OVER: // Gameover Screen
 		image(gameover, 0, 0);
