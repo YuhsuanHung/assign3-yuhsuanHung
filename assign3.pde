@@ -10,17 +10,18 @@ PImage bg,life;
 PImage soil0, soil1, soil2, soil3, soil4, soil5;
 PImage stone1,stone2;
 int soilX,soilY,lifeX,lifeY;
-int stoneX,stoneY,stone1X,stone1Y,stone2X,stone2Y=2000;
+float stoneX,stoneY,stone1X,stone1Y,stone2X,stone2Y=2000;
 //groundhog
 PImage groundhogIdle;
 PImage groundhogDown,groundhogLeft,groundhogRight;
-int groundhogX1,groundhogY1;//position
-int speed=80/16;//15change to 16
+float groundhogX1,groundhogY1;//position
+float speed=5;
 boolean downPressed = false;
 boolean leftPressed = false;
 boolean rightPressed = false;
 boolean hogIdle=false;
-int k=0;
+//move
+int soilMove;
 // For debug function; DO NOT edit or remove this!
 int playerHealth =2;
 float cameraOffsetY = 0;
@@ -52,7 +53,7 @@ void setup() {
   groundhogX1=320;
   groundhogY1=80;
   if(hogIdle){
-  image(groundhogIdle,groundhogX1,groundhogY1);
+    image(groundhogIdle,groundhogX1,groundhogY1);
   }
 }
 
@@ -68,7 +69,6 @@ void draw() {
       translate(0, cameraOffsetY);
     }
     /* ------ End of Debug Function ------ */
-
     
 	switch (gameState) {
     case GAME_START: // Start Screen
@@ -95,9 +95,10 @@ void draw() {
 	    strokeWeight(5);
 	    fill(253,184,19);
 	    ellipse(590,50,120,120);
-
-pushMatrix();
-translate(0,k);
+    
+    //move
+    pushMatrix();
+    translate(0,soilMove);
     // Grass
 		fill(124, 204, 25);
 		noStroke();
@@ -241,26 +242,37 @@ translate(0,k);
    image(stone2,stone2X,stone6Y);
    stone6Y-=80;
    }
-popMatrix();
-//groundhog
+   popMatrix();
+   
+    //groundhog
     if(groundhogX1==320&&groundhogY1==80){
     image(groundhogIdle,groundhogX1,groundhogY1);
     }
     if(hogIdle){
+    if(soilMove>-80*20){//hog dont move,soilmove
+    groundhogY1=80;
+    image(groundhogIdle,groundhogX1,groundhogY1);
+    }else{
     image(groundhogIdle,groundhogX1,groundhogY1);
     }
-    if(downPressed) {
+    }
+    if (downPressed) {
     hogIdle=false;
-    image(groundhogDown,groundhogX1,groundhogY1);
-    groundhogY1 += speed;
     leftPressed=false;
     rightPressed=false;
-    if(groundhogY1>2000)groundhogY1=2000;
+    groundhogY1 += speed;
+    if(soilMove>-80*20){
+    image(groundhogDown,groundhogX1,80);
+    soilMove-=speed;
+    }else{
+    soilMove=-80*20;
+    image(groundhogDown,groundhogX1,groundhogY1);
+    }
     if(groundhogY1%80==0){//160,240,320,400stop
-    downPressed=false;
+      downPressed=false;
       hogIdle=true;
      }
-  }
+    }
     if (leftPressed) {
     hogIdle=false;
     image(groundhogLeft,groundhogX1,groundhogY1);
@@ -285,16 +297,12 @@ popMatrix();
       hogIdle=true;
     }
   }
+    
     //heart
     for(int l=10;l<10+70*playerHealth;l+=70){
        lifeY=10;
       image(life,l,lifeY);
     }
-// Player
-if(downPressed){ 
- translate(0,k);
- k-=speed;
-}
     break;
 
 		case GAME_OVER: // Gameover Screen
@@ -320,21 +328,44 @@ if(downPressed){
     }
 }
 
-void keyPressed(){
-	// Add your moving input code here
-if (key == CODED) { 
-switch (keyCode) {
-case DOWN:
-downPressed = true;
-break;
-case LEFT:
-leftPressed = true;
-break;
-case RIGHT:
-rightPressed = true;
-break;
+    void keyPressed() {
+    if (key == CODED) { 
+    switch (keyCode) {
+    case DOWN:
+    downPressed = true;
+    if (rightPressed) {
+    downPressed=false;
     }
-}
+    if (leftPressed) {
+    downPressed=false;
+    }
+    if(groundhogY1>=height-80){//bottom stop
+        hogIdle=true;
+        downPressed=false;
+        groundhogY1=height-80;
+    }
+    break;
+    case LEFT:
+    leftPressed = true;
+    if (rightPressed) {
+    leftPressed=false;
+    }
+    if (downPressed) {
+    leftPressed=false;
+    }
+    break;
+    case RIGHT:
+    rightPressed = true;
+    if (leftPressed) {
+    rightPressed=false;
+    }
+    if (downPressed) {
+    rightPressed=false;
+    }
+    break;
+        }
+      }
+
 	// DO NOT REMOVE OR EDIT THE FOLLOWING SWITCH/CASES
     switch(key){
       case 'w':
