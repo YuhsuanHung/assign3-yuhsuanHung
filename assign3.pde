@@ -264,14 +264,17 @@ void draw() {
     if(soilMove>-80*20){
     image(groundhogDown,groundhogX1,80);
     soilMove-=speed;
+    if(soilMove%80==0){//160,240,320,400stop
+    groundhogY1 = 80;
+     }
     }else{
-    soilMove=-80*20;
+    //soilMove=-80*20;
     image(groundhogDown,groundhogX1,groundhogY1);
     }
     if(groundhogY1%80==0){//160,240,320,400stop
       downPressed=false;
       hogIdle=true;
-     }
+      }
     }
     if (leftPressed) {
     hogIdle=false;
@@ -279,7 +282,6 @@ void draw() {
     groundhogX1 -= speed;
     downPressed=false;
     rightPressed=false;
-    if(groundhogX1<0)groundhogX1=0;
     if(groundhogX1%80==0){//160,240,320,400stop
       leftPressed=false;
       hogIdle=true;
@@ -291,7 +293,6 @@ void draw() {
     groundhogX1 += speed;
     downPressed=false;
     leftPressed=false;
-    if(groundhogX1>width-80)groundhogX1=width-80;
     if(groundhogX1%80==0){//160,240,320,400stop
       rightPressed=false;
       hogIdle=true;
@@ -353,6 +354,11 @@ void draw() {
     if (downPressed) {
     leftPressed=false;
     }
+    if(groundhogX1<=0){//bottom stop
+        hogIdle=true;
+        leftPressed=false;
+        groundhogX1=0;
+    }
     break;
     case RIGHT:
     rightPressed = true;
@@ -361,6 +367,11 @@ void draw() {
     }
     if (downPressed) {
     rightPressed=false;
+    }
+    if(groundhogX1>=width-80){//bottom stop
+        hogIdle=true;
+        rightPressed=false;
+        groundhogX1=width-80;
     }
     break;
         }
